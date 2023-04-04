@@ -70,6 +70,8 @@ label.grid(row=0, column=3)
 SLIDER_WIDTH = 30*int(WINDOW_WIDTH)/100
 slider = tk.Scale(window, from_=0, to=100, orient=tk.HORIZONTAL,
                   command=on_volume_slider_change, length=SLIDER_WIDTH)
+slider.set(50)
+pygame.mixer.music.set_volume(0.5)
 slider.grid(row=1, column=3, columnspan=4)
 # Start the event loop
 window.mainloop()

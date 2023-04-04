@@ -1,11 +1,12 @@
 import os
 import subprocess
+import tempfile
 
 
 def convert(input_file):
 
     # path of input and output files
-    output_file = "output.wav"
+    output_file = tempfile.gettempdir()+"/output_Music_player_Custom_.wav"
 
     if os.path.exists(output_file):
         os.remove(output_file)
