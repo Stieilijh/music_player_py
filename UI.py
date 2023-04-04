@@ -9,6 +9,7 @@ pygame.mixer.init()
 
 WINDOW_WIDTH = "600"
 WINDOW_LENGTH = "400"
+TEMPFILE = ""
 
 
 def on_select_btn_clicked():
@@ -17,6 +18,8 @@ def on_select_btn_clicked():
                                                       ("wav files", "*.wav")))
     if not os.path.exists(str(file_path)):
         return
+    global TEMPFILE
+    TEMPFILE = file_path
     select_song(file_path)
 
 
@@ -40,9 +43,18 @@ def on_volume_slider_change(value):
     pygame.mixer.music.set_volume(int(value)/100)
 
 
+def on_closing():
+    global TEMPFILE
+    if (os.path.exists(str(TEMPFILE))):
+        os.remove(str(TEMPFILE))
+    window.destroy()
+
+
 # Create a window
 window = tk.Tk()
 
+# set protocol for on close
+window.protocol("WM_DELETE_WINDOW", on_closing)
 # set the size of the window to 600x400 pixels
 window.geometry(WINDOW_WIDTH+"x"+WINDOW_LENGTH)
 
