@@ -15,7 +15,7 @@ SONG_POSITION = 0
 
 def on_select_btn_clicked():
     file_path = filedialog.askopenfilename(title="Open a music file",
-                                           filetypes=(("mp3 files", "*.mp3")))
+                                           filetypes=(("MP3 files", "*.mp3"),))
     if not os.path.exists(str(file_path)):
         return
     select_song(file_path)
@@ -36,7 +36,9 @@ def on_play_btn_clicked():
 def on_pause_btn_clicked():
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.pause()
+        mus_slider.configure(state="disabled")
     else:
+        mus_slider.configure(state="normal")
         pygame.mixer.music.unpause()
 
 
@@ -60,7 +62,7 @@ def on_music_slider_change(pvalue):
         pygame.mixer.music.play()
         pygame.mixer.music.set_pos(position)
         SONG_POSITION = position * 1000
-        MUSIC_SLIDER_CLICKED = False
+    MUSIC_SLIDER_CLICKED = False
 
 
 def update_pos_variable():
