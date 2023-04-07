@@ -4,7 +4,7 @@ os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from tkinter import filedialog
 import tkinter as tk
 import pygame
-
+import file_explorer
 
 
 pygame.init()
@@ -16,7 +16,7 @@ WINDOW_LENGTH = "400"
 SONG_LENGTH = 0
 MUSIC_SLIDER_CLICKED = False
 SONG_POSITION = 0
-
+FOLDER_PATH = ""
 
 def on_select_btn_clicked():
     file_path = filedialog.askopenfilename(title="Open a music file",
@@ -35,6 +35,8 @@ def select_song(file_path):
 
 
 def on_restart_btn_clicked():
+    if SONG_LENGTH==0:
+        return
     global SONG_POSITION
     SONG_POSITION = 0
     pygame.mixer.music.play()
@@ -43,6 +45,8 @@ def on_restart_btn_clicked():
 
 
 def on_pause_btn_clicked():
+    if SONG_LENGTH==0:
+        return
     if pygame.mixer.music.get_busy():
         pygame.mixer.music.pause()
         mus_slider.configure(state="disabled")
@@ -70,6 +74,7 @@ def on_mus_slider_click(event):
     MUSIC_SLIDER_CLICKED = True
 
 def change_mus_slider_label():
+    global SONG_POSITION,SONG_LENGTH
     if SONG_LENGTH==0:
         return
     value=convert_seconds_to_minutes(SONG_POSITION//1000)+"/"+convert_seconds_to_minutes(SONG_LENGTH)
@@ -84,6 +89,33 @@ def convert_seconds_to_minutes(seconds):
     else:
         s=str(s)
     return m+":"+s
+
+def on_file_explorer_select(event):
+    global FOLDER_PATH
+    widget = event.widget
+    selection = widget.curselection()
+    path=""
+    if selection:
+        file_name = widget.get(selection[0])
+        path = os.path.join(FOLDER_PATH, file_name)
+
+    if path=="":
+        return
+    if os.path.isfile(path) and os.path.splitext(path)[1] == ".mp3":
+        select_song(path)
+
+def on_file_explorer_btn_click():
+    global FOLDER_PATH
+    folder_path = filedialog.askdirectory()
+    if not os.path.exists(folder_path):
+        return
+    FOLDER_PATH = folder_path
+    global file_explorer_frame
+    file_explorer_frame = file_explorer.FileExplorer(window, folder_path)
+    file_explorer_frame.file_listbox.bind("<Double-Button-1>",on_file_explorer_select)
+    file_explorer_frame.grid(row=10, column=0, sticky="nsew",columnspan=5)
+    
+
 
 #Process Methods
 def update_music_slider():
@@ -153,7 +185,13 @@ mus_slider.set(0)
 mus_slider.bind("<Button-1>", on_mus_slider_click)
 mus_slider.bind("<ButtonRelease-1>", on_music_slider_change)
 mus_slider.grid(row=6, column=1, columnspan=4)
+
+#create a File Explorer button
+file_explorer_btn = tk.Button(window,text="Open a folder",
+                                   command=on_file_explorer_btn_click)
+file_explorer_btn.grid(row=8,column=0)
 # processes
+
 window.after(1000, update_music_slider)
 window.after(100, update_pos_variable)
 # Start the event loop
