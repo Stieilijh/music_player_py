@@ -1,10 +1,15 @@
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+
+from tkinter import filedialog
 import tkinter as tk
 import pygame
-from tkinter import filedialog
-import os
+
+
 
 pygame.init()
 pygame.mixer.init()
+
 
 WINDOW_WIDTH = "600"
 WINDOW_LENGTH = "400"
@@ -31,6 +36,7 @@ def on_play_btn_clicked():
     global SONG_POSITION
     SONG_POSITION = 0
     pygame.mixer.music.play()
+    mus_slider.configure(state="normal")
 
 
 def on_pause_btn_clicked():
